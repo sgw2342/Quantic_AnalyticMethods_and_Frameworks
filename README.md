@@ -1,8 +1,8 @@
 NovaBank Retention — RUN BOOK 
 =================================================
 
-This run book matches your final script: `novabank_compare_policies.py`
-Recommendation: **Use XGBoost + Profit Weights + Plain Language** as your standard setting.
+This run book explains how to use the script: `novabank_compare_policies.py`
+Recommendation: **Use XGBoost + Plain Language** as your standard setting.
 
 -------------------------------------------------
 0) Environment & install
