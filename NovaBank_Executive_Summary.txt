@@ -1,4 +1,4 @@
-NovaBank: Proactive Retention — Executive Summary 
+0.04NovaBank: Proactive Retention — Executive Summary 
 ========================================================================================
 
 The problem
@@ -26,26 +26,26 @@ Money assumptions used in the analysis (and adjustable in the code): €20 cost 
 Final results (profit‑max thresholds)
 ------------------------------------
 - XGBoost — Winner
-  - Net profit: €97,990
-  - Cutoff (threshold): 0.045 (contact anyone with ≥ 4.5% chance to say yes)
-  - Targeted: 6,613 customers
-  - Hit rate (precision): 15.7% (~1 in 6 contacted said yes)
-  - Coverage (recall): 89.7% (captured almost 9 out of 10 yeses)
-  - Added vs Do‑Nothing: €127,740
-  - Counts: TP 1,040, FP 5,573, FN 119, TN 3,561
+  - Net profit: €97,530
+  - Cutoff (threshold): 0.04 (contact anyone with ≥ 4% chance to say yes)
+  - Targeted: 7,536 customers
+  - Hit rate (precision): 14.3% (~1 in 6 contacted said yes)
+  - Coverage (recall): 92.8% (captured over 9 out of 10 yeses)
+  - Added vs Do‑Nothing: €118,280
+  - Counts: TP 1,076, FP 6,460, FN 83, TN 2,674
 - Pruned Decision Tree: €95,550 (threshold 0.045; precision 14.4%; recall 92.1%)
-- Gradient Boosting (sklearn): €94,190 (threshold 0.040; precision 13.1%; recall 95.5%)
-- Logistic Regression: €92,190 (threshold 0.035; precision 12.8%; recall 96.0%)
+- Gradient Boosting: €94,230 (threshold 0.040; precision 13.1%; recall 95.3%)
+- Logistic Regression: €92,750 (threshold 0.035; precision 12.8%; recall 96.0%)
 - Simple Rule (“prior success”): –€188,050 net
 - Do‑Nothing: –€289,750 net
 
-Why the 0.045 cutoff makes sense (plain language)
+Why the 0.04 cutoff makes sense (plain language)
 -------------------------------------------------
-Every customer gets a “chance to say yes” score. We contact anyone at 4.5% or higher. That may look low, but calling costs €20 while a saved customer is worth €250. If we set the bar higher, we miss too many saves; at 4.5% we still make some calls that don’t convert, but overall we keep many more customers, which maximizes total profit under today’s economics. (If costs or values change, the best cutoff moves—our scripts re‑find it quickly.)
+Every customer gets a “chance to say yes” score. We contact anyone at 4% or higher. That may look low, but calling costs €20 while a saved customer is worth €250. If we set the bar higher, we miss too many saves; at 4% we still make some calls that don’t convert, but overall we keep many more customers, which maximizes total profit under today’s economics. (If costs or values change, the best cutoff moves—our scripts re‑find it quickly.)
 
 Our recommendation (what to do)
 -------------------------------
-1. Adopt XGBoost as the primary model, using the 0.045 profit‑max cutoff from this run.  
+1. Adopt XGBoost as the primary model, using the 0.04 profit‑max cutoff from this run.  
    - If operations are capacity‑constrained, select the top‑K customers by XGB score instead of a fixed cutoff.
 2. Keep the Pruned Decision Tree as a transparency companion—its clear, flow‑chart‑like rules make decisions easy to audit and explain.  
 3. Ship customer‑level reason codes so agents know why each customer was selected and what to emphasize in conversations.
@@ -66,7 +66,7 @@ Pilot plan (4–6 weeks)
 ----------------------
 - Scope: A/B test the new policy against current practice on a representative slice.  
 - KPIs: Net € uplift, hit rate (precision), coverage (recall), opt‑outs/complaints.  
-- Playbook: Start with the 0.045 cutoff; if capacity‑limited, use top‑K. Share plain‑language reason codes with agents.
+- Playbook: Start with the 0.04 cutoff; if capacity‑limited, use top‑K. Share plain‑language reason codes with agents.
 
 Key risks & safeguards
 ----------------------
@@ -79,4 +79,4 @@ Key risks & safeguards
 
 Bottom line
 -----------
-Adopt XGBoost with a 0.045 cutoff (or top‑K when capped). It targets the right customers, keeps more revenue, and gives agents clear, defensible reasons to guide each conversation.
+Adopt XGBoost with a 0.04 cutoff (or top‑K when capped). It targets the right customers, keeps more revenue, and gives agents clear, defensible reasons to guide each conversation.
