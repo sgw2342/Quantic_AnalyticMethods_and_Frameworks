@@ -68,7 +68,7 @@ d) Lighter explain exports
    --explain-top-n 200 --top-features-per-customer 5
 
 -------------------------------------------------
-4) Key command-line flags (detected in your script)
+4) Key command-line flags 
 -------------------------------------------------
 Required:
   data                          Path to bank-additional-full.csv
