@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-novabank_compare_policies_profitweighted.py
+novabank_compare_policies.py
 
 Compare:
 - Logistic Regression (profit-weighted or not)
@@ -455,7 +455,7 @@ def main():
         ])
         fit_params = {"xgb__sample_weight": sample_weight_tr} if sample_weight_tr is not None else {}
         xgb_pipe.fit(X_train, y_train, **fit_params)
-        _normalize_xgb_base_score(xgb_pipe)
+        #_normalize_xgb_base_score(xgb_pipe)
 
         # (Optional) Calibrated XGB via prefit split (mirrors GB calibration pattern)
         if args.calibrate_xgb:
@@ -480,7 +480,7 @@ def main():
             ])
             fit_params_prefit = {"xgb__sample_weight": w_tr} if w_tr is not None else {}
             xgb_prefit.fit(X_tr, y_tr, **fit_params_prefit)
-            _normalize_xgb_base_score(xgb_prefit)
+            #_normalize_xgb_base_score(xgb_prefit)
 
             try:
                 xgb_calibrated = CalibratedClassifierCV(estimator=xgb_prefit, method=args.calibration_method,
