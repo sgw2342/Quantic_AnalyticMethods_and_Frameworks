@@ -72,6 +72,24 @@ except Exception:
 from novabank_data_setup import load_and_prepare
 from novabank_rule_baseline import rule_predict_prior_success
 
+# Helper to deal with BaseScore Float bug
+
+def _normalize_xgb_base_score(xgb_pipeline):
+    """
+    Some XGBoost versions store base_score as a bracketed string like "[1.125E-1]".
+    This converts it to a plain float in the booster config so downstream tools don't crash.
+    """
+    try:
+        import json
+        booster = xgb_pipeline.named_steps["xgb"].get_booster()
+        cfg = json.loads(booster.save_config())
+        bs = cfg.get("learner", {}).get("learner_model_param", {}).get("base_score", None)
+        if isinstance(bs, str) and bs.startswith("[") and bs.endswith("]"):
+            # Strip brackets and cast to float
+            cfg["learner"]["learner_model_param"]["base_score"] = float(bs.strip("[]"))
+            booster.load_config(json.dumps(cfg))
+    except Exception as e:
+        print(f"NOTE: could not normalize XGB base_score (safe to ignore if all runs succeed): {e}")
 
 # ---------- Helpers: profit math ----------
 def total_net_with_fn_penalty(y_true, y_pred, offer_cost, value_if_positive) -> Tuple[float, Tuple[int,int,int,int]]:
@@ -169,6 +187,8 @@ def _get_feature_names_from_preprocessor(preprocessor) -> List[str]:
         return [str(n) for n in preprocessor.get_feature_names_out()]
     except Exception:
         return [f"feature_{i}" for i in range(getattr(preprocessor, "n_features_in_", 0))]
+
+
 
 def _explain_tree_model(model_name: str,
                         pipe: Pipeline,
@@ -435,6 +455,7 @@ def main():
         ])
         fit_params = {"xgb__sample_weight": sample_weight_tr} if sample_weight_tr is not None else {}
         xgb_pipe.fit(X_train, y_train, **fit_params)
+        _normalize_xgb_base_score(xgb_pipe)
 
         # (Optional) Calibrated XGB via prefit split (mirrors GB calibration pattern)
         if args.calibrate_xgb:
@@ -459,6 +480,7 @@ def main():
             ])
             fit_params_prefit = {"xgb__sample_weight": w_tr} if w_tr is not None else {}
             xgb_prefit.fit(X_tr, y_tr, **fit_params_prefit)
+            _normalize_xgb_base_score(xgb_prefit)
 
             try:
                 xgb_calibrated = CalibratedClassifierCV(estimator=xgb_prefit, method=args.calibration_method,
