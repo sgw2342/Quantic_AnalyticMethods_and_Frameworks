@@ -1,0 +1,19 @@
+# NovaBank Retention — requirements.txt
+# Purpose: dependencies to run the modular scripts, including XGBoost and SHAP.
+# Notes:
+# - These pins favor stability. If your environment already has newer libs, you can relax pins (e.g., >= instead of ==).
+# - Python 3.9–3.12 recommended.
+
+numpy==1.26.4           # numeric arrays; compatible with sklearn 1.4/1.5 and SHAP
+pandas==2.2.2           # data frames and CSV I/O
+scipy==1.11.4           # scientific routines used by scikit-learn
+scikit-learn==1.4.2     # models, pipelines, calibration; our code supports estimator/base_estimator differences
+matplotlib==3.8.4       # plots (ROC/PR, calibration, profit bars)
+xgboost==2.0.3          # XGBoost model (tree_method=hist)
+shap==0.46.0            # feature attributions and customer-level reason codes
+joblib==1.3.2           # parallel utils used by sklearn
+threadpoolctl==3.4.0    # controls thread pools for BLAS (sklearn dependency)
+
+# Optional (only if you export notebooks or use Jupyter locally)
+# jupyterlab>=4.0.0
+# ipykernel>=6.29.0
